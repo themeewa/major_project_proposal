@@ -130,9 +130,9 @@ So our challenge is to provide solution for generating tags, findings and impres
 \paragraph{}
 We will be using Generative adversarial networks for multi-label classification. For our task, we setup a GAN for generating new sample data for N classes and then classifying it for N+1 classes, representing N real classes for N labels and one class for fake data.
 Various regions of an image may contain different information for different body parts, which can be related sometimes or to be looked as unrelated multiple diagnostic many other times. This task includes localising the image regions and then generating narration for those regions. We are using a co-attention mechanism for analysing given images and the tags generated in multi-label classification process for the given image simultaneously and provide semantic information which can be used for further processing along with previously generated tags information.
-\paragraph{Co-attention:}
+\paragraph{}
 Generating paragraph of description using hierarchical LSTM
-Our third task is to generate descriptions for imaging report summarizing the findings for various regions of images. Description are usually long paragraphs having multiple lines. So this task presents challenges as generating long paragraphs is a nontrivial task. We will be using hierarchical LSTM\cite{1} with co-attention mechanism for generating findings for various regions and then combining them and further processing for description summary generation.
+Our third task is to generate descriptions for imaging report summarizing the findings for various regions of images. Description are usually long paragraphs having multiple lines. So this task presents challenges as generating long paragraphs is a nontrivial task. We will be using hierarchical LSTM\cite{2} with co-attention mechanism for generating findings for various regions and then combining them and further processing for description summary generation.
 \paragraph{}
 To summarize, our multi-task learning framework  will be generating tags, sentences for findings and multi-sentence textual description for given radiology images.
 
@@ -144,10 +144,13 @@ To summarize, our multi-task learning framework  will be generating tags, senten
 \subsection{Background Study}
 \paragraph{}
 Generating text label for images has been addressed as a multi-label classification task in many previous research. My base paper used pre-trained vgg19 model to classify x-ray images for various class by extracting features from last convolution layer and last two fully connected layers of vgg-19 as multi-label classifier. vgg-19 is trained on a stack of convolutional-maxpooling layer followed by fully connected layers. Max-pooling causes loss of important spatial information and it makes the network ignore the relation between the part and the whole image.
-\paragraph{}
+
 
 \paragraph{}
-
+Most recent image captioning models are based on a CNN-RNN framework (\cite{4};Karpathy and Fei-Fei, 2015\cite{5}; Krause et al., 2017\cite{6}). Recently, attention mechanisms have been shown to be useful for image captioning (Xu et al., 2015\cite{7}; You et al., 2016\cite{8}). Xu et al. (2015)\cite{7} introduce a spatial-visual attention mechanism over image features extracted from intermediate layers of the CNN. You et al. (2016)\cite{8} propose a semantic attention mechanism over tags of given images. Rather than adopting a single-layer LSTM (Hochreiter and Schmidhuber, 1997)\cite{11}, which is less capable of modeling long word sequences, we leverage the compositional nature of the report and the visual features along with semantic tags, we adopt  a hierarchical LSTM for paragraph generation with a co-attention network to generate topics. 
+\paragraph{}
+Recent work on GAN (Goodfellow
+et al., 2014)\cite{9} have achieved stable to train GANS such as DCGAN \cite{10} building good image representations by training Generative Adversarial Networks (GANs) and later reusing parts of the generator and discriminator networks as feature extractors for supervised tasks. 
 \paragraph{}
 
 
@@ -163,31 +166,31 @@ Generating text label for images has been addressed as a multi-label classificat
 \hline
 \rowcolor[HTML]{C0C0C0} 
 \textbf{Authors} & \textbf{Method} & \textbf{Advantages} & \textbf{Limitations} \\ \hline
-David T. Jones & \begin{tabular}[c]{@{}c@{}}Proteins Secondary\\ Structure Prediction\\ Based on Position\\ Specific Scoring\\ Matrix\end{tabular} & \begin{tabular}[c]{@{}c@{}}Using a new testing set\\ based on a set of 187\\ unique folds, and three\\ way cross-validation\\ based on structural\\ similarity.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Takes too much time\\ for training the module\\ and predicting the\\ protein secondary
-\\structure.\end{tabular} \\ \hline
-\begin{tabular}[c]{@{}c@{}}Guoren Wang\\ et al.\end{tabular} & \begin{tabular}[c]{@{}c@{}}A protein secondary\\ structure prediction\\ framework based on\\ the Extreme\\ Learning Machine\end{tabular} & \begin{tabular}[c]{@{}c@{}}ELM is a new learning\\ method used in the training\\ of PSS framework which\\ consumes little training\\ time while achieving\\ high accuracy.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Not much improvement\\ in the Q3 accuracy and\\ Segment Overlap (Sov)\\ score.\end{tabular} \\ \hline
-\begin{tabular}[c]{@{}c@{}}Amouda\\ Venkatesan et al.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Computational Approach\\ for Protein Structure\\ Prediction\end{tabular} & \begin{tabular}[c]{@{}c@{}}Contributes to the\\ prediction of a native-\\like structure by eliminating\\ the time constraint and\\ effort demand. Energy\\ of the predicted structure\\ is minimized to great\\ extent, which proves the\\ stability of protein. \end{tabular} & \begin{tabular}[c]{@{}c@{}}Tested only on two\\ peptides. Not focused on\\ the Q3 or Q8 accuracy\\ as well as not focused\\ on Sov accuracy.\end{tabular} \\ \hline
-\begin{tabular}[c]{@{}c@{}}Matt Spencer\\ et al.\end{tabular} & \begin{tabular}[c]{@{}c@{}}A deep learning network\\ approach to ab initio\\ protein secondary\\ structure prediction\end{tabular} & \begin{tabular}[c]{@{}c@{}}Used multilayer deep\\ learning network with PSSM\\ and Atchley's factor.\\ Utilized a hybrid scoring\\ method that takes Q3\\ and Sov score into account\\ in an attempt to increase\\ the PSP accuracy.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Not able to increase\\ the Q3 score\\ significantly.\end{tabular} \\ \hline
+Zhang et al., 2017 & \begin{tabular}[c]{@{}c@{}} generating \\semi-structured\\ pathology reports\\using LSTM & CNN\end{tabular} & \begin{tabular}[c]{@{}c@{}}Attention based.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Contents are\\restricted to\\5 predefined topics.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Liang et al.\end{tabular} & \begin{tabular}[c]{@{}c@{}}Recurrent\\topic-transition GAN\\for visual paragraph\\generation\end{tabular} & \begin{tabular}[c]{@{}c@{}}Uses\\Hierarchical LSTM for \\sentance generation.\end{tabular} & \begin{tabular}[c]{@{}c@{}}No Co-attention\\ mechanism.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Radford et. al.\end{tabular} & \begin{tabular}[c]{@{}c@{}}GAN using all\\Deep convolution\\ net without pooling\\\end{tabular} & \begin{tabular}[c]{@{}c@{}}Stable to train,\\ Discriminator can\\serve as classifier \end{tabular} & \begin{tabular}[c]{@{}c@{}}used for image generation.\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}c@{}}Visual Geometry Group\end{tabular} & \begin{tabular}[c]{@{}c@{}}VGG 19\\convolution+pooling\\based pretrained model\end{tabular} & \begin{tabular}[c]{@{}c@{}}Pretrained for\\1000 classes\\Free to use\end{tabular} & \begin{tabular}[c]{@{}c@{}}Maxpooling cause spatial information loss.\end{tabular} \\ \hline
 \end{tabular}
 }
 \end{table}
 \paragraph{}
-There are a significant amount of work already done in this field. But the problem of very high time consumption during the training of deep learning network \cite{3} or the problem of stagnating of the accuracy around 80 \% is still there \cite{6}. Extreme Learning Machine is able to reduce the training time significantly, but it did not able to improve the Q3 accuracy \cite{4}. In our work, we are using ELM to reduce the training time of our deep learning network framework and LSTM to help it to increase the Q3 accuracy.
+Many researchers have explored various convolution based architectures for Multi-label classification and RNN-CNN based  text generation for images, but recent developments in GAN architecture provides a new approach to learn better image representations.  
  \subsection{Problem Statement}
  \paragraph{}
  Using GANs to improve multi-label classification efficiency for “Tag generation task” in Automatic Generation of natural Medical Imaging Reports
 \subsection{Objectives}
 \begin{itemize}
-\item Set up PSI-BLAST and get position-specific scoring matrix.
-\item Generation of Sequence profiles.
+\item Generating Sample using various GAN architectures.
+\item Building GAN based classifier.
 \item Training of deep learning network architectures.
-\item Prediction of protein secondary structure and post processing of the results to optimize the results.
+\item Post processing of the results to optimize the results.
+\item implementation of real-life application for proposed architecture
 \end{itemize}
 \clearpage
 \section{Research Methodology and Materials}
 \subsection{Datasets}
 \paragraph{}
-Our training dataset will be a collection of protein sequences from four datasets - CB6133, CB513, CASP10, and CASP11. CB6133 is a non-homologous protein structure and sequence dataset. This methodology uses the CB6133 dataset to train and test the deep neural models. The CB513, CASP10, CASP11 datasets are public benchmark dataset only used for testing. We will be evaluating the performance of our model based on Q3, Q8 accuracy and Sov score.
+Our training dataset will be a collection of X-ray images and atgs, findings and impressions along with each X-ray images 
 \subsection{Proposed Methodology}
 Overview
 We are proposing a multi-task framework to perform both tag prediction and description generation for given x-ray image. For a given input X-ray image, our framework will generate long natural reports covering diverse topic.  
@@ -202,25 +205,37 @@ We are proposing a multi-task framework to perform both tag prediction and descr
 \end{figure}
 \subsubsection{Tag prediction}
 
-We will use GANs tuned in for semi-supervised learning for multi-label classification of images and as well as for extracting feature vector to be used by co-attention mechanism later.
+One X-ray image can have more than one abnormalities. Predicting tags will require classifying each image against various classes of abnormalities, hence a multi-class classifier suits our need best. We will use a Deep Convolution GAN (DCGAN)\cite{3}, a variation of GAN. Dsicriminator of train DCGAN will  be used for semi-supervised learning for multi-label classification of images and as well as for extracting feature vector to be used by co-attention mechanism later. For classifying for multiple label we will use softmax layer on outmost fully connected layer instead of sigmoid, giving us probability for image belonging to N classes. Last convolution layer from discriminator architecture will give us feature vector.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{dcgan.png}
+    \caption{Architecture for DCGAN. Notice there are no Spatial Pooling layer.}
+    \label{fig:my_label}
+\end{figure}
+\paragraph{}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=130]{ACGAN.png}
+    \caption{Architecture for CatGAN. Here Real images from different classes are used to train with generator generating new images for that particular classes.}
+    \label{fig:my_label}
+\end{figure}
 \paragraph{}
 \subsubsection{Co-attention}
 The previous step added tags to our information and now for utilizing both visual information of a region of the image and predicted tags. We are utilising co-attention mechanism to simultaneously attend to both modalities.
 Joint context vector is generated using embedding vector for most likely tags, feature vector from MLC, combined with previous hidden state of Sentence LSTM generating soft semanntic attentions and soft visual attentions over given image features and tags. Further visual and semantic context vecotr, produced separately will be combined by concatenating.
 Visual and semantic context vectors will be computed
 \paragraph{}
-\subsubsection{Sentence LSTM}
-A single layer LSTM using joint context vector as its input generates topic vector for word LSTM, next level of hierarchical LSTM using topic generator combined with stop control mechanism.
-\paragraph{}
-\subsubsection{Word LSTM}
-Taking the topic vector and START token as inital input 
+\subsubsection{Hierarchica LSTM}
+Here Network hierarchically builds an embedding for a paragraph from embeddings for sentences and words, then decodes this embedding to reconstruct the paragraph
+{Sentence LSTM} will be single layer LSTM using joint context vector as its input generates topic vector for word LSTM, next level of hierarchical LSTM using topic generator combined with stop control mechanism.
+Word LSTM Taking the topic vector and START token as inital input 
 \paragraph{}
 
 \section{Conclusion and Future Work}
 \paragraph{}
-The Protein secondary structure prediction can be used in for the prediction of protein tertiary structure, for protein-protein interactions, and for drug discovery, depending upon the prediction efficiency. The more efficiently we predict the secondary structure, more efficiently we can predict the tertiary structures and get the functional information about those protein sequences. 
+Learning better image  representation can help us developing better classifier ( discriminator architecture) and using GAN also allow us to explore the idea of generating new image samples for further learning and for applications like generating full x-ray from incomplete or generating image for lateral view from front view X-ray or vice-versa. 
 \paragraph{}
-The future work is to find a set of features which will efficiently train model and will optimize the protein secondary structure prediction results.
+Another way to improve the framework is to use GANs with Self -Attention capabilities.
 \clearpage
 \section{Time line of the project}
 \begin{table}[htp]
@@ -228,38 +243,50 @@ The future work is to find a set of features which will efficiently train model 
 \caption{Time line for completion of project}
 \label{my-label}
 \begin{tabular}{|
->{\columncolor[HTML]{EFEFEF}}l |l|l|l|l|l|l|}
+>{\columncolor[HTML]{EFEFEF}}l |l|l|l|l|l|l|l|}
 \hline
-\cellcolor[HTML]{CBCEFB}\textbf{Milestone} &                                      &                                &                                &                                &                                &                                    \\ \hline
-Feasibility Study                          & \cellcolor[HTML]{C0C0C0}Jul-Sep 2018 &                                &                                &                                &                                &                                    \\ \hline
-Objective 1                                &                                      & \cellcolor[HTML]{C0C0C0}Oct 18 &                                &                                &                                &                                    \\ \hline
-Objective 2                                &                                      &                                & \cellcolor[HTML]{C0C0C0}Nov 18 &                                &                                &                                    \\ \hline
-Objective 3                                &                                      &                                &                                & \cellcolor[HTML]{C0C0C0}Nov 18 - Dec 18 &                                &                                    \\ \hline
-Objective 4                                &                                      &                                &                                &                                & \cellcolor[HTML]{C0C0C0}Dec 18 &                                    \\ \hline
-Final Submission                           &                                      &                                &                                &                                &                                & \cellcolor[HTML]{C0C0C0}Jan 19 - May 19 \\ \hline
+\cellcolor[HTML]{CBCEFB}\textbf{Milestone} &                                      &                                &                                &        &                                &                                &                                  \\ \hline
+Feasibility Study                          & \cellcolor[HTML]{C0C0C0}Jul-Sep 2018 &            &                          &                                &                                &                                &                                    \\ \hline
+Objective 1                     &                                                      & \cellcolor[HTML]{C0C0C0}Oct 18 &            &                    &                                &                                &                                    \\ \hline
+Objective 2                      &                                                &                                & \cellcolor[HTML]{C0C0C0}Nov 14 &     &                           &                                &                                    \\ \hline
+Objective 3                &                                                      &                                &                                & \cellcolor[HTML]{C0C0C0}Dec 18 &      &                          &                                    \\ \hline
+Objective 4                    &            &                                      &                                &                                & \cellcolor[HTML]{C0C0C0}Dec 18 &                                &                                    \\ \hline
+Objective 5                      &          &                                      &                                &                                &                                & \cellcolor[HTML]{C0C0C0}Jan 20 &                                    \\ \hline
+Final Submission                   &        &                                      &                                &                                &                                &                                & \cellcolor[HTML]{C0C0C0}Jan 20 - May 19 \\ \hline
 \end{tabular}
 \end{table}
 \clearpage
 \addcontentsline{toc}{section}{References}
 \begin{thebibliography}{}
 \bibitem{1}
-Smith, T.F. \& Waterman, M.S., “Identification of Common Molecular Subsequences”, Journal of Molecular Biology, Vol. 147, No. 1, Page No. 195-197, 1981.
+Jing, Baoyu, Pengtao Xie, and Eric Xing. "On the automatic generation of medical imaging reports." arXiv preprint arXiv:1711.08195 (2017).
 \bibitem{2}
-Altschul, S.F., madden, T.L., Schaffer, A.A., Zhang, J.H., Zhang, Z., Miller, W., \& Lipman, D.J., “Gapped BLAST and PSI-BLAST: a new generation of protein database search programs”, Nucleic Acids Research, Vol. 25, No. 17, Page No. 3389-3402, 1997.
-\bibitem{8}
- Guang-Bin Huang, Qin-Yu Zhu, Chee-Kheong Siew, "Extreme learning machine: a new learning scheme of feedforward neural networks", IEEE International Joint Conference on Neural Networks, (IJCNN'2004), Vol. 2, Page No. 985-990, 2004.
- \bibitem{9}
- Guang-Bin Huang, Qin-Yu Zhu, Chee-Kheong Siew, "Extreme learning machine: theory and applications", Neurocomputing, Vol. 70, N0. 1-3, Page No. 489-501, 2006.
+Krause, Jonathan, et al. "A hierarchical approach for generating descriptive image paragraphs." Computer Vision and Pattern Recognition (CVPR), 2017 IEEE Conference on. IEEE, 2017.
+
 \bibitem{3}
-David T. Jones, “Protein secondary structure prediction based on position-specific scoring matrices”, Journal of Molecular Biology, Vol. 292, No. 2, Page No. 195-202, 1999.
-\bibitem{4}
-Guoren Wang, Yi Zhao, Di Wang “A protein secondary structure prediction framework based on the Extreme Learning Machine”, Neurocomputing, Vol. 72, No. 1-3, Page No. 262-268, 2008.
+Suárez, Patricia L., Angel D. Sappa, and Boris X. Vintimilla. "Infrared image colorization based on a triplet DCGAN architecture." Computer Vision and Pattern Recognition Workshops (CVPRW), 2017 IEEE Conference on. IEEE, 2017.
+ \bibitem{4}
+ Oriol Vinyals, Alexander Toshev, Samy Bengio, and
+Dumitru Erhan. Show and tell: A neural image
+caption generator. In Proceedings of the IEEE conference
+on computer vision and pattern recognition,
+pages 3156–3164, 2015.
 \bibitem{5}
-Amouda Venkatesan, Jeyakodi Gopal, Manimozhi Candavelou, Sowjanya Gollapalli, "Computational Approach for Protein Structure Prediction", Healthcare Informatics Research, Vol. 19, No. 2, Page No. 137-147, 2013
+Karpathy, Andrej, and Li Fei-Fei. "Deep visual-semantic alignments for generating image descriptions." Proceedings of the IEEE conference on computer vision and pattern recognition. 2015.
 \bibitem{6}
-Matt Spencer, Jesse Eickholt, and Jianlin Cheng, “A Deep learning Network Approach to ab initio Protein Secondary Structure Prediction”, IEEE/ACM Transactions on Computational Biology and Bioinformatics, Vol. 12, No. 1, Page No. 103-112, 2015 
+Krause, Jonathan, et al. "A hierarchical approach for generating descriptive image paragraphs." Computer Vision and Pattern Recognition (CVPR), 2017 IEEE Conference on. IEEE, 2017.
 \bibitem{7}
-Yanbu Guo, Bingyi Wang, Weihua Li, Bei Yang, "Protein secondary structure prediction improved by recurrent neural networks integrated with 2-dimensional convolutional neural networks", Journal of Bioinformatics and Computational Biology, 2018
+Xu, Kelvin, et al. "Show, attend and tell: Neural image caption generation with visual attention." International conference on machine learning. 2015.
+\bibitem{8}
+You, Quanzeng, et al. "Image captioning with semantic attention." Proceedings of the IEEE conference on computer vision and pattern recognition. 2016.
+\bibitem{9}
+Goodfellow, Ian, et al. "Generative adversarial nets." Advances in neural information processing systems. 2014.
+\bibitem{10}
+Radford, Alec, Luke Metz, and Soumith Chintala. "Unsupervised representation learning with deep convolutional generative adversarial networks." arXiv preprint arXiv:1511.06434 (2015).
+\bibitem{11}
+Hochreiter, Sepp, and Jürgen Schmidhuber. "Long short-term memory." Neural computation 9.8 (1997): 1735-1780.
+\bibitem{12}
+Liang, Xiaodan, et al. "Recurrent topic-transition GAN for visual paragraph generation." arXiv preprint arXiv:1703.07022 (2017).
 \end{thebibliography}
 
 \end{document}
